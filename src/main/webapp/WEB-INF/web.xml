@@ -6,7 +6,7 @@
 	<display-name>sample1</display-name>
 
 	<filter>
-		<filter-name>wicket.sample1</filter-name>
+		<filter-name>wicket.Whiteboard</filter-name>
 		<filter-class>org.apache.wicket.protocol.http.WicketFilter</filter-class>
 		<init-param>
 			<param-name>applicationClassName</param-name>
@@ -15,7 +15,7 @@
 	</filter>
 
 	<filter-mapping>
-		<filter-name>wicket.sample1</filter-name>
+		<filter-name>wicket.Whiteboard</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 </web-app>
