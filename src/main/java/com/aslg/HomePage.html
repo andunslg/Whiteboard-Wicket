@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-/*
+<!--
 * Licensed to the Apache Software Foundation (ASF) under one or more
 * contributor license agreements. See the NOTICE file distributed with
 * this work for additional information regarding copyright ownership.
@@ -14,7 +14,7 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
-*/
+-->
 <html>
 <head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
@@ -27,17 +27,18 @@
 
 </head>
 
-<body style="height: 75%">
+<body style="height:94%;">
     <div id="whiteboard" style = "width:100%; height:100%;"></div>
 </body>
 
 <script type="text/javascript">
     whiteboard = bay.whiteboard.Create();
+    whiteboard.getMainCollection().onChange = function(element){
+        chnagedElement=this.getJson(element);
+        Wicket.Ajax.get({u:callbackUrl,ep:{json:chnagedElement}});
+    };
     whiteboard.render(document.getElementById('whiteboard'));
 
-//    $("#id").click(function () {
-//        var wcall = Wicket.Ajax.get({ u: callbackUrl + '' });
-//    });
 
 </script>
 
