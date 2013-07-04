@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+
+    <wicket:link>
+        <script src="whiteboard.js"></script>
+        <link rel="stylesheet" href="goog.css">
+        <link rel="stylesheet" href="whiteboard.css">
+    </wicket:link>
+
+</head>
+
+<body>
+    <div id="whiteboard" style = "width:100%; height:100%;"></div>
+</body>
+
+<script type="text/javascript">
+    whiteboard = bay.whiteboard.Create();
+    whiteboard.render(document.getElementById('whiteboard'));
+
+//    $("#id").click(function () {
+//        var wcall = Wicket.Ajax.get({ u: callbackUrl + '' });
+//    });
+
+</script>
+
+</html>
