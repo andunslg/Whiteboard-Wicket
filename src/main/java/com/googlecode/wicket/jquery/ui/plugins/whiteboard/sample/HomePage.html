@@ -19,13 +19,21 @@
 
 <body style="height:94%;">
 <div id="whiteboard" style = "width:100%; height:100%;"></div>
+<form wicket:id="form">
+    <button wicket:id="button1">Print Element List</button>
+    <button wicket:id="button2">Add Element</button>
+    <button wicket:id="button3">Load Whiteboard</button>
+</form>
 </body>
 
 <script type="text/javascript">
     whiteboard = bay.whiteboard.Create();
+    var collection=whiteboard.getMainCollection()
+
     whiteboard.getMainCollection().onChange = function(element){
         chnagedElement=this.getJson(element);
-        Wicket.Ajax.get({u:callbackUrl,ep:{json:chnagedElement}});
+        whiteboardAll=collection.jsonCode();
+        Wicket.Ajax.get({u:callbackUrl,ep:{editedElement:chnagedElement,elementList:whiteboardAll}});
     };
     whiteboard.render(document.getElementById('whiteboard'));
 
