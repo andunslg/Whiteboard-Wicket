@@ -1,5 +1,4 @@
-<!DOCTYPE HTML>
-<!--
+/*
 * Licensed to the Apache Software Foundation (ASF) under one or more
 * contributor license agreements. See the NOTICE file distributed with
 * this work for additional information regarding copyright ownership.
@@ -14,32 +13,37 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
 * limitations under the License.
--->
-<html>
-<head>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+*/
 
-    <wicket:link>
-        <script src="whiteboard.js"></script>
-        <link rel="stylesheet" href="goog.css">
-        <link rel="stylesheet" href="whiteboard.css">
-    </wicket:link>
+package com.googlecode.wicket.jquery.ui.plugins.whiteboard.sample;
 
-</head>
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.protocol.http.WebApplication;
 
-<body style="height:94%;">
-    <div id="whiteboard" style = "width:100%; height:100%;"></div>
-</body>
+/**
+ * Application object for your web application. If you want to run this application without deploying, run the Start class.
+ * 
+ * @see com.googlecode.Start#main(String[])
+ */
+public class WicketApplication extends WebApplication
+{    	
+	/**
+	 * @see org.apache.wicket.Application#getHomePage()
+	 */
+	@Override
+	public Class<? extends WebPage> getHomePage()
+	{
+		return HomePage.class;
+	}
 
-<script type="text/javascript">
-    whiteboard = bay.whiteboard.Create();
-    whiteboard.getMainCollection().onChange = function(element){
-        chnagedElement=this.getJson(element);
-        Wicket.Ajax.get({u:callbackUrl,ep:{json:chnagedElement}});
-    };
-    whiteboard.render(document.getElementById('whiteboard'));
+	/**
+	 * @see org.apache.wicket.Application#init()
+	 */
+	@Override
+	public void init()
+	{
+		super.init();
 
-
-</script>
-
-</html>
+		// add your configuration here
+	}
+}

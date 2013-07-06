@@ -14,14 +14,21 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package com.aslg;
+package com.googlecode.wicket.jquery.ui.plugins.whiteboard.sample;
 
+import com.googlecode.wicket.jquery.core.JQueryEvent;
+import com.googlecode.wicket.jquery.core.ajax.JQueryAjaxBehavior;
+import com.googlecode.wicket.jquery.ui.form.button.Button;
+import com.googlecode.wicket.jquery.ui.plugins.whiteboard.WhiteboardBehavior;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class HomePage extends WebPage {
@@ -30,6 +37,7 @@ public class HomePage extends WebPage {
 	public HomePage(final PageParameters parameters) {
 		super(parameters);
 
+		add(new WhiteboardBehavior());
 
 		final AbstractDefaultAjaxBehavior behave = new AbstractDefaultAjaxBehavior() {
 			protected void respond(final AjaxRequestTarget target) {
@@ -48,7 +56,6 @@ public class HomePage extends WebPage {
 		};
 
 		add(behave);
-
     }
 
 }
