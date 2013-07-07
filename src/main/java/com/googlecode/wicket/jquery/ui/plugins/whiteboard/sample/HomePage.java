@@ -39,7 +39,7 @@ public class HomePage extends WebPage{
 	public HomePage(final PageParameters parameters){
 		super(parameters);
 
-		WhiteboardBehavior whiteboardBehavior=new WhiteboardBehavior();
+		WhiteboardBehavior whiteboardBehavior=new WhiteboardBehavior("whiteboard");
 		final HashMap<Integer,Element> elementMap=whiteboardBehavior.getElementMap();
 		add(whiteboardBehavior);
 
@@ -80,7 +80,7 @@ public class HomePage extends WebPage{
 					PointFree pointFree=PointFree.getPointFree(jsonObject);
 					String json=pointFree.getJSON();
 					target.appendJavaScript(""+
-							"collection.acceptJsonStr('"+json+"');"+
+							"elementCollection.acceptJsonStr('"+json+"');"+
 							"");
 				}catch(JSONException e){
 					e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -95,7 +95,7 @@ public class HomePage extends WebPage{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form){
 				target.appendJavaScript(""+
-						"javascript: collection.parseJson('[{\"id\": 0, \"type\": \"PointFree\", \"x\": -495, \"y\": 44},{\"id\": 1, \"type\": \"PointFree\", \"x\": -334, \"y\": -25},{\"id\": 2, \"type\": \"PencilRect\", \"p1\": 0, \"p2\": 1}]');"+
+						"elementCollection.parseJson('[{\"id\": 0, \"type\": \"PointFree\", \"x\": -495, \"y\": 44},{\"id\": 1, \"type\": \"PointFree\", \"x\": -334, \"y\": -25},{\"id\": 2, \"type\": \"PencilRect\", \"p1\": 0, \"p2\": 1}]');"+
 						"");
 			}
 		});

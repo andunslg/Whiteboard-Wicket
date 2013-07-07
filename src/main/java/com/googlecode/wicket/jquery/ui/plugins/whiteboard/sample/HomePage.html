@@ -25,18 +25,4 @@
     <button wicket:id="button3">Load Whiteboard</button>
 </form>
 </body>
-
-<script type="text/javascript">
-    whiteboard = bay.whiteboard.Create();
-    var collection=whiteboard.getMainCollection()
-
-    whiteboard.getMainCollection().onChange = function(element){
-        chnagedElement=this.getJson(element);
-        whiteboardAll=collection.jsonCode();
-        Wicket.Ajax.get({u:callbackUrl,ep:{editedElement:chnagedElement,elementList:whiteboardAll}});
-    };
-    whiteboard.render(document.getElementById('whiteboard'));
-
-</script>
-
 </html>

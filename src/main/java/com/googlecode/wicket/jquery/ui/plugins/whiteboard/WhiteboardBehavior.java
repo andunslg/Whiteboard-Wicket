@@ -27,29 +27,30 @@ import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.json.JSONException;
 import org.apache.wicket.ajax.json.JSONObject;
-import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.markup.head.CssHeaderItem;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
-import org.apache.wicket.markup.head.PriorityHeaderItem;
+import org.apache.wicket.markup.head.*;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
-import org.apache.wicket.util.string.StringValue;
 
 import java.util.HashMap;
 
 public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
+	private String whiteboardId;
 	private HashMap<Integer,Element> elementMap=new HashMap<Integer,Element>();
+
+	public WhiteboardBehavior(String whiteboardId){
+		super();
+		this.whiteboardId=whiteboardId;
+	}
 
 	protected void respond(final AjaxRequestTarget target){
 
 		RequestCycle cycle = RequestCycle.get();
 		WebRequest webRequest = (WebRequest) cycle.getRequest();
 		String editedElement = webRequest.getQueryParameters().getParameterValue("editedElement").toString();
-		String elementList = webRequest.getQueryParameters().getParameterValue("elementList").toString();
+		//String elementList = webRequest.getQueryParameters().getParameterValue("elementList").toString();
 
-		System.out.println(elementList);
+		//System.out.println(elementList);
 		System.out.println(editedElement);
 
 		try{
@@ -202,9 +203,17 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		initReferences(response);
 		String componentMarkupId=component.getMarkupId();
 		String callbackUrl=getCallbackUrl().toString();
+		String whiteboardInitializeScript="" +
+				"whiteboard = bay.whiteboard.Create();\n" +
+				"elementCollection=whiteboard.getMainCollection();"+
+				"whiteboard.getMainCollection().onChange = function(element){\n"+
+				"changedElement=this.getJson(element);\n"+
+				"Wicket.Ajax.get({u:'"+callbackUrl+"',ep:{editedElement:changedElement}});\n};\n"+
+				"whiteboard.render(document.getElementById('"+whiteboardId+"'));";
 
-		response.render(JavaScriptHeaderItem.forScript("var callbackUrl='"+callbackUrl+"';","urlHolder"));
+		response.render(OnDomReadyHeaderItem.forScript(whiteboardInitializeScript));
 	}
+
 
 	private void initReferences(IHeaderResponse response){
 		IWhiteboardLibrarySettings settings = getLibrarySettings();
