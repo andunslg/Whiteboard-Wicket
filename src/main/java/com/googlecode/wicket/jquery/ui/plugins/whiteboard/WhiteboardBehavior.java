@@ -32,11 +32,13 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	private String whiteboardId;
-	private HashMap<Integer,Element> elementMap=new HashMap<Integer,Element>();
+	private static HashMap<Integer,Element> elementMap=new HashMap<Integer,Element>();
 
 	public WhiteboardBehavior(String whiteboardId){
 		super();
@@ -51,7 +53,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		//String elementList = webRequest.getQueryParameters().getParameterValue("elementList").toString();
 
 		//System.out.println(elementList);
-		System.out.println(editedElement);
+		//System.out.println(editedElement);
 
 		try{
 
@@ -210,6 +212,24 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				"changedElement=this.getJson(element);\n"+
 				"Wicket.Ajax.get({u:'"+callbackUrl+"',ep:{editedElement:changedElement}});\n};\n"+
 				"whiteboard.render(document.getElementById('"+whiteboardId+"'));";
+
+		if(!elementMap.isEmpty()){
+			String elementList="[";
+			Iterator iterator = elementMap.entrySet().iterator();
+			while (iterator.hasNext()) {
+				Map.Entry mapEntry = (Map.Entry) iterator.next();
+                Element element=(Element)mapEntry.getValue();
+
+				if(mapEntry.getKey().equals(0)){
+					elementList+=element.getJSON();
+				}
+				else{
+					elementList+=","+element.getJSON();
+				}
+			}
+			elementList+="]";
+			whiteboardInitializeScript+="elementCollection.parseJson('"+elementList+"');";
+		}
 
 		response.render(OnDomReadyHeaderItem.forScript(whiteboardInitializeScript));
 	}

@@ -17,15 +17,12 @@
 package com.googlecode.wicket.jquery.ui.plugins.whiteboard.sample;
 
 import com.googlecode.wicket.jquery.ui.plugins.whiteboard.WhiteboardBehavior;
-import com.googlecode.wicket.jquery.ui.plugins.whiteboard.elements.*;
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
+import com.googlecode.wicket.jquery.ui.plugins.whiteboard.elements.Element;
+import com.googlecode.wicket.jquery.ui.plugins.whiteboard.elements.PointFree;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.json.JSONException;
 import org.apache.wicket.ajax.json.JSONObject;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
