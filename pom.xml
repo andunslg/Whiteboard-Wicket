@@ -20,9 +20,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.aslg</groupId>
-    <artifactId>WhiteBoard</artifactId>
-    <packaging>war</packaging>
+    <groupId>com.googlecode.wicket-jquery-ui.wicket-jquery-ui-plugins</groupId>
+    <artifactId>whiteboard</artifactId>
+    <packaging>jar</packaging>
     <version>1.0</version>
 
     <licenses>
@@ -39,8 +39,18 @@
         <!--  WICKET DEPENDENCIES -->
         <dependency>
             <groupId>org.apache.wicket</groupId>
-            <artifactId>wicket</artifactId>
+            <artifactId>wicket-core</artifactId>
             <version>${wicket.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-native-websocket-core</artifactId>
+            <version>0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-native-websocket-tomcat</artifactId>
+            <version>0.9</version>
         </dependency>
     </dependencies>
     <build>

@@ -30,6 +30,9 @@ import org.apache.wicket.ajax.json.JSONObject;
 import org.apache.wicket.markup.head.*;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.protocol.ws.IWebSocketSettings;
+import org.apache.wicket.protocol.ws.api.IWebSocketConnection;
+import org.apache.wicket.protocol.ws.api.IWebSocketConnectionRegistry;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -196,10 +199,29 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				}
 			}
 
+			IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
+			System.out.println(reg.getConnections(Application.get()).size());
+			for (IWebSocketConnection c : reg.getConnections(Application.get())) {
+				try {
+					JSONObject element=new JSONObject(editedElement);
+					c.sendMessage(getMessage(element).toString());
+					System.out.println(getMessage(element));
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+
 		}catch(JSONException e){
 			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
 		}
 	}
+
+	private JSONObject getMessage(JSONObject element) throws JSONException {
+		return new JSONObject()
+				.put("type", "wbElement")
+				.put("json", element);
+	}
+
 	public void renderHead(Component component, IHeaderResponse response) {
 		super.renderHead(component,response);
 		initReferences(response);
