@@ -23,11 +23,16 @@ public class Text extends Element{
 	protected int r;
 
 	public Text(int id, String label, String color, Boolean hidden, String type, Boolean trace, int r){
-		super(id,label,color,hidden,type,trace);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
 		this.r=r;
 	}
 
-	public static Text getText(JSONObject object) throws JSONException{
+	public Text(JSONObject object) throws JSONException{
 		Integer id=(Integer)object.get("id");
 
 		String label=null;
@@ -60,31 +65,44 @@ public class Text extends Element{
 
 		String type=(String)object.get("type");
 
-		int p1=(Integer)object.get("r");
+		int r=(Integer)object.get("r");
 
-		return  new Text(id,label,color,hidden,type,trace,p1);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
+		this.r=r;
 
 	}
 
 	public String getJSON(){
-		String jsonString="{\"id\": "+id+", \"type\": \""+type+"\", \"r\": "+r+"";
 
-		if(label!=null){
-			jsonString=jsonString.concat(",\"label\": \""+label+"\"");
-		}
-		if(color!=null){
-			jsonString=jsonString.concat(",\"color\": \""+color+"\"");
-		}
-		if(hidden!=null){
-			jsonString=jsonString.concat(",\"hidden\": "+hidden+"");
-		}
-		if(trace!=null){
-			jsonString=jsonString.concat(",\"trace\": "+trace+"");
+		JSONObject jsonObject=new JSONObject();
+		try{
+			jsonObject.put("id",id);
+			jsonObject.put("type",type);
+			jsonObject.put("r",r);
+			if(label!=null){
+				jsonObject.put("label",label);
+			}
+			if(color!=null){
+				jsonObject.put("color",color);
+			}
+			if(hidden!=null){
+				jsonObject.put("hidden",hidden);
+			}
+			if(trace!=null){
+				jsonObject.put("trace",trace);
+			}
+
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 
-		jsonString=jsonString.concat("}");
+		return jsonObject.toString();
 
-		return jsonString;
 	}
 
 	public int getR(){

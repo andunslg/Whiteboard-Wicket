@@ -16,17 +16,17 @@
  */
 package com.googlecode.wicket.jquery.ui.plugins.whiteboard;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.FormComponentPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.protocol.ws.api.message.ClosedMessage;
 import org.apache.wicket.protocol.ws.api.message.ConnectedMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Whiteboard extends Panel{
+	public  static final Logger log =   LoggerFactory.getLogger(Whiteboard.class);
 	private static final long serialVersionUID = 1L;
 
 	public Whiteboard(String id){
@@ -38,13 +38,13 @@ public class Whiteboard extends Panel{
 			@Override
 			protected void onConnect(ConnectedMessage message){
 				super.onConnect(message);
-				System.out.println("Connecting :"+message.toString());
+				log.debug("Connecting :"+message.toString());
 			}
 
 			@Override
 			protected void onClose(ClosedMessage message){
 				super.onClose(message);
-				System.out.println("Disconnecting :"+message.toString());
+				log.debug("Disconnecting :"+message.toString());
 			}
 		});
 
@@ -53,7 +53,5 @@ public class Whiteboard extends Panel{
 
 		WhiteboardBehavior whiteboardBehavior=new WhiteboardBehavior("whiteboard");
 		this.add(whiteboardBehavior);
-
-
 	}
 }

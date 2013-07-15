@@ -26,15 +26,6 @@ public abstract class Element{
 	protected Boolean hidden;	//flag if the element hidden (not visible)
 	protected String type;		// type (class) of the element
 
-	protected Element(int id, String label, String color, Boolean hidden, String type, Boolean trace){
-		this.id=id;
-		this.label=label;
-		this.color=color;
-		this.hidden=hidden;
-		this.type=type;
-		this.trace=trace;
-	}
-
 	public abstract String getJSON();
 
 	public int getId(){

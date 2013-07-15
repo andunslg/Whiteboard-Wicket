@@ -52,6 +52,12 @@
             <artifactId>wicket-native-websocket-tomcat</artifactId>
             <version>0.9</version>
         </dependency>
+        <!-- slf4j-log4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.5.6</version>
+        </dependency>
     </dependencies>
     <build>
         <resources>

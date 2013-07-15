@@ -27,12 +27,17 @@ public class PencilCurve extends Element{
 
 
 	public PencilCurve(int id, String label, String color, Boolean hidden, String type, Boolean trace, int p0,ArrayList<Double[][]> points){
-		super(id,label,color,hidden,type,trace);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
 		this.p0=p0;
 		this.points=points;
 	}
 
-	public static PencilCurve getPencilCurve(JSONObject object) throws JSONException{
+	public PencilCurve(JSONObject object) throws JSONException{
 		Integer id=(Integer)object.get("id");
 
 		String label=null;
@@ -93,33 +98,44 @@ public class PencilCurve extends Element{
 
 		}
 
-		return  new PencilCurve(id,label,color,hidden,type,trace,p0,points);
-
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
+		this.p0=p0;
+		this.points=points;
 	}
 
 	public String getJSON(){
-		String jsonString="{\"id\": "+id+", \"type\": \""+type+"\", \"p0\": "+p0+"";
+		JSONObject jsonObject=new JSONObject();
+		try{
+			jsonObject.put("id",id);
+			jsonObject.put("type",type);
+			jsonObject.put("p0",p0);
+			for(int i=0;i<points.size();i++){
+				jsonObject.put("x"+i,points.get(i)[0][0]);
+				jsonObject.put("y"+i,points.get(i)[0][1]);
+			}
+			if(label!=null){
+				jsonObject.put("label",label);
+			}
+			if(color!=null){
+				jsonObject.put("color",color);
+			}
+			if(hidden!=null){
+				jsonObject.put("hidden",hidden);
+			}
+			if(trace!=null){
+				jsonObject.put("trace",trace);
+			}
 
-		for(int i=0;i<points.size();i++){
-			jsonString=jsonString.concat(",\"x"+i+"\": "+points.get(i)[0][0]+",\"x"+i+"\":"+points.get(i)[0][1]+"");
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 
-		if(label!=null){
-			jsonString=jsonString.concat(",\"label\": \""+label+"\"");
-		}
-		if(color!=null){
-			jsonString=jsonString.concat(",\"color\": \""+color+"\"");
-		}
-		if(hidden!=null){
-			jsonString=jsonString.concat(",\"hidden\": "+hidden+"");
-		}
-		if(trace!=null){
-			jsonString=jsonString.concat(",\"trace\": "+trace+"");
-		}
-
-		jsonString=jsonString.concat("}");
-
-		return jsonString;
+		return jsonObject.toString();
 	}
 
 	public ArrayList<Double[][]> getPoints(){

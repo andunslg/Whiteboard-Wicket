@@ -24,12 +24,17 @@ public class PointAtLine extends Element{
 	protected double t;
 
 	public PointAtLine(int id, String label, String color, Boolean hidden, String type, Boolean trace, double t, int obj){
-		super(id,label,color,hidden,type,trace);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
 		this.t=t;
 		this.obj=obj;
 	}
 
-	public static PointAtLine getPointAtLine(JSONObject object) throws JSONException{
+	public PointAtLine(JSONObject object) throws JSONException{
 		Integer id=(Integer)object.get("id");
 
 		String label=null;
@@ -66,29 +71,42 @@ public class PointAtLine extends Element{
 
 		Double t=(Double)object.get("t");
 
-		return  new PointAtLine(id,label,color,hidden,type,trace,t,obj);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
+		this.t=t;
+		this.obj=obj;
 
 	}
 
 	public String getJSON(){
-		String jsonString="{\"id\": "+id+", \"type\": \""+type+"\", \"obj\": "+obj+", \"t\": "+t+"";
+		JSONObject jsonObject=new JSONObject();
+		try{
+			jsonObject.put("id",id);
+			jsonObject.put("type",type);
+			jsonObject.put("obj",obj);
+			jsonObject.put("t",t);
+			if(label!=null){
+				jsonObject.put("label",label);
+			}
+			if(color!=null){
+				jsonObject.put("color",color);
+			}
+			if(hidden!=null){
+				jsonObject.put("hidden",hidden);
+			}
+			if(trace!=null){
+				jsonObject.put("trace",trace);
+			}
 
-		if(label!=null){
-			jsonString=jsonString.concat(",\"label\": \""+label+"\"");
-		}
-		if(color!=null){
-			jsonString=jsonString.concat(",\"color\": \""+color+"\"");
-		}
-		if(hidden!=null){
-			jsonString=jsonString.concat(",\"hidden\": "+hidden+"");
-		}
-		if(trace!=null){
-			jsonString=jsonString.concat(",\"trace\": "+trace+"");
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 
-		jsonString=jsonString.concat("}");
-
-		return jsonString;
+		return jsonObject.toString();
 	}
 
 

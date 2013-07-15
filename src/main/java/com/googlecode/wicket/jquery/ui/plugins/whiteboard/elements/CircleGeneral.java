@@ -25,13 +25,18 @@ public class CircleGeneral extends Element{
 	protected double c;
 
 	public CircleGeneral(int id, String label, String color, Boolean hidden, String type, Boolean trace, double a, double b, double c){
-		super(id,label,color,hidden,type,trace);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
 		this.a=a;
 		this.b=b;
 		this.c=c;
 	}
 
-	public static CircleGeneral getCircleGeneral(JSONObject object) throws JSONException{
+	public CircleGeneral(JSONObject object) throws JSONException{
 		Integer id=(Integer)object.get("id");
 
 		String label=null;
@@ -70,29 +75,43 @@ public class CircleGeneral extends Element{
 
 		double c=(Integer)object.get("c");
 
-		return  new CircleGeneral(id,label,color,hidden,type,trace,a,b,c);
-
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
+		this.a=a;
+		this.b=b;
+		this.c=c;
 	}
 
 	public String getJSON(){
-		String jsonString="{\"id\": "+id+", \"type\": \""+type+"\", \"a\": "+a+", \"b\": "+b+", \"c\": "+c+"";
+		JSONObject jsonObject=new JSONObject();
+		try{
+			jsonObject.put("id",id);
+			jsonObject.put("type",type);
+			jsonObject.put("a",a);
+			jsonObject.put("b",b);
+			jsonObject.put("c",c);
+			if(label!=null){
+				jsonObject.put("label",label);
+			}
+			if(color!=null){
+				jsonObject.put("color",color);
+			}
+			if(hidden!=null){
+				jsonObject.put("hidden",hidden);
+			}
+			if(trace!=null){
+				jsonObject.put("trace",trace);
+			}
 
-		if(label!=null){
-			jsonString=jsonString.concat(",\"label\": \""+label+"\"");
-		}
-		if(color!=null){
-			jsonString=jsonString.concat(",\"color\": \""+color+"\"");
-		}
-		if(hidden!=null){
-			jsonString=jsonString.concat(",\"hidden\": "+hidden+"");
-		}
-		if(trace!=null){
-			jsonString=jsonString.concat(",\"trace\": "+trace+"");
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 
-		jsonString=jsonString.concat("}");
-
-		return jsonString;
+		return jsonObject.toString();
 	}
 
 	public double getB(){

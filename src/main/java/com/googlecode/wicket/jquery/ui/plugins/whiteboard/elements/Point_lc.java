@@ -25,13 +25,18 @@ public class Point_lc extends Element{
 	protected int num;
 
 	public Point_lc(int id, String label, String color, Boolean hidden, String type, Boolean trace, int obj1, int obj2, int num){
-		super(id,label,color,hidden,type,trace);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
 		this.obj1=obj1;
 		this.obj2=obj2;
 		this.num=num;
 	}
 
-	public static Point_lc getPoint_lc(JSONObject object) throws JSONException{
+	public Point_lc(JSONObject object) throws JSONException{
 		Integer id=(Integer)object.get("id");
 
 		String label=null;
@@ -70,29 +75,43 @@ public class Point_lc extends Element{
 
 		int num=(Integer)object.get("num");
 
-		return  new Point_lc(id,label,color,hidden,type,trace,obj1,obj2,num);
-
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
+		this.obj1=obj1;
+		this.obj2=obj2;
+		this.num=num;
 	}
 
 	public String getJSON(){
-		String jsonString="{\"id\": "+id+", \"type\": \""+type+"\", \"obj1\": "+obj1+", \"obj2\": "+obj2+", \"num\": "+num+"";
+		JSONObject jsonObject=new JSONObject();
+		try{
+			jsonObject.put("id",id);
+			jsonObject.put("type",type);
+			jsonObject.put("obj1",obj1);
+			jsonObject.put("obj2",obj2);
+			jsonObject.put("num",num);
+			if(label!=null){
+				jsonObject.put("label",label);
+			}
+			if(color!=null){
+				jsonObject.put("color",color);
+			}
+			if(hidden!=null){
+				jsonObject.put("hidden",hidden);
+			}
+			if(trace!=null){
+				jsonObject.put("trace",trace);
+			}
 
-		if(label!=null){
-			jsonString=jsonString.concat(",\"label\": \""+label+"\"");
-		}
-		if(color!=null){
-			jsonString=jsonString.concat(",\"color\": \""+color+"\"");
-		}
-		if(hidden!=null){
-			jsonString=jsonString.concat(",\"hidden\": "+hidden+"");
-		}
-		if(trace!=null){
-			jsonString=jsonString.concat(",\"trace\": "+trace+"");
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 
-		jsonString=jsonString.concat("}");
-
-		return jsonString;
+		return jsonObject.toString();
 	}
 
 	public int getObj2(){

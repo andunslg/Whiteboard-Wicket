@@ -26,13 +26,18 @@ public class Circle_3p extends Element{
 
 
 	public Circle_3p(int id, String label, String color, Boolean hidden, String type, Boolean trace, int p1, int p2,int p3){
-		super(id,label,color,hidden,type,trace);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
 		this.p1=p1;
 		this.p2=p2;
 		this.p3=p3;
 	}
 
-	public static Circle_3p getCircle_3p(JSONObject object) throws JSONException{
+	public Circle_3p(JSONObject object) throws JSONException{
 		Integer id=(Integer)object.get("id");
 
 		String label=null;
@@ -71,29 +76,43 @@ public class Circle_3p extends Element{
 
 		int p3=(Integer)object.get("p3");
 
-		return  new Circle_3p(id,label,color,hidden,type,trace,p1,p2,p3);
-
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
+		this.p1=p1;
+		this.p2=p2;
+		this.p3=p3;
 	}
 
 	public String getJSON(){
-		String jsonString="{\"id\": "+id+", \"type\": \""+type+"\", \"p1\": "+p1+", \"p2\": "+p2+", \"p3\": "+p3+"";
+		JSONObject jsonObject=new JSONObject();
+		try{
+			jsonObject.put("id",id);
+			jsonObject.put("type",type);
+			jsonObject.put("p1",p1);
+			jsonObject.put("p2",p2);
+			jsonObject.put("p3",p3);
+			if(label!=null){
+				jsonObject.put("label",label);
+			}
+			if(color!=null){
+				jsonObject.put("color",color);
+			}
+			if(hidden!=null){
+				jsonObject.put("hidden",hidden);
+			}
+			if(trace!=null){
+				jsonObject.put("trace",trace);
+			}
 
-		if(label!=null){
-			jsonString=jsonString.concat(",\"label\": \""+label+"\"");
-		}
-		if(color!=null){
-			jsonString=jsonString.concat(",\"color\": \""+color+"\"");
-		}
-		if(hidden!=null){
-			jsonString=jsonString.concat(",\"hidden\": "+hidden+"");
-		}
-		if(trace!=null){
-			jsonString=jsonString.concat(",\"trace\": "+trace+"");
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 
-		jsonString=jsonString.concat("}");
-
-		return jsonString;
+		return jsonObject.toString();
 	}
 
 	public int getP2(){

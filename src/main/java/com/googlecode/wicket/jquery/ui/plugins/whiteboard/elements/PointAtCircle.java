@@ -25,13 +25,18 @@ public class PointAtCircle extends Element{
 	protected double y;
 
 	public PointAtCircle(int id, String label, String color, Boolean hidden, String type, Boolean trace, double x,double y, int obj){
-		super(id,label,color,hidden,type,trace);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
 		this.x=x;
 		this.y=y;
 		this.obj=obj;
 	}
 
-	public static PointAtCircle getPointAtCircle(JSONObject object) throws JSONException{
+	public PointAtCircle(JSONObject object) throws JSONException{
 		Integer id=(Integer)object.get("id");
 
 		String label=null;
@@ -69,29 +74,45 @@ public class PointAtCircle extends Element{
 		Double x=(Double)object.get("x");
 		Double y=(Double)object.get("y");
 
-		return  new PointAtCircle(id,label,color,hidden,type,trace,x,y,obj);
+		this.id=id;
+		this.label=label;
+		this.color=color;
+		this.hidden=hidden;
+		this.type=type;
+		this.trace=trace;
+		this.x=x;
+		this.y=y;
+		this.obj=obj;
 
 	}
 
 	public String getJSON(){
-		String jsonString="{\"id\": "+id+", \"type\": \""+type+"\", \"obj\": "+obj+", \"x\": "+x+", \"y\": "+y+"";
 
-		if(label!=null){
-			jsonString=jsonString.concat(",\"label\": \""+label+"\"");
-		}
-		if(color!=null){
-			jsonString=jsonString.concat(",\"color\": \""+color+"\"");
-		}
-		if(hidden!=null){
-			jsonString=jsonString.concat(",\"hidden\": "+hidden+"");
-		}
-		if(trace!=null){
-			jsonString=jsonString.concat(",\"trace\": "+trace+"");
+		JSONObject jsonObject=new JSONObject();
+		try{
+			jsonObject.put("id",id);
+			jsonObject.put("type",type);
+			jsonObject.put("obj",obj);
+			jsonObject.put("x",x);
+			jsonObject.put("y",y);
+			if(label!=null){
+				jsonObject.put("label",label);
+			}
+			if(color!=null){
+				jsonObject.put("color",color);
+			}
+			if(hidden!=null){
+				jsonObject.put("hidden",hidden);
+			}
+			if(trace!=null){
+				jsonObject.put("trace",trace);
+			}
+
+		}catch(JSONException e){
+			e.printStackTrace();
 		}
 
-		jsonString=jsonString.concat("}");
-
-		return jsonString;
+		return jsonObject.toString();
 	}
 
 
