@@ -35,54 +35,39 @@ public class PencilRect extends Element{
 	}
 
 	public PencilRect(JSONObject object) throws JSONException{
-		Integer id=(Integer)object.get("id");
+		this.id=(Integer)object.get("id");
 
-		String label=null;
 		try{
-			label=(String)object.get("lable");
+			this.label=(String)object.get("lable");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String color=null;
 		try{
-			color=(String)object.get("color");
+			this.color=(String)object.get("color");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean trace=null;
 		try{
-			trace=(Boolean)object.get("trace");
+			this.trace=(Boolean)object.get("trace");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean hidden=null;
 		try{
-			hidden=(Boolean)object.get("hidden");
+			this.hidden=(Boolean)object.get("hidden");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String type=(String)object.get("type");
-
-		int p1=(Integer)object.get("p1");
-
-		int p2=(Integer)object.get("p2");
-
-		this.id=id;
-		this.label=label;
-		this.color=color;
-		this.hidden=hidden;
-		this.type=type;
-		this.trace=trace;
-		this.p1=p1;
-		this.p2=p2;
+		this.type=(String)object.get("type");
+		this.p1=(Integer)object.get("p1");
+		this.p2=(Integer)object.get("p2");
 
 	}
 
-	public String getJSON(){
+	public JSONObject getJSON(){
 		JSONObject jsonObject=new JSONObject();
 		try{
 			jsonObject.put("id",id);
@@ -106,7 +91,7 @@ public class PencilRect extends Element{
 			e.printStackTrace();
 		}
 
-		return jsonObject.toString();
+		return jsonObject;
 	}
 
 	public int getP2(){

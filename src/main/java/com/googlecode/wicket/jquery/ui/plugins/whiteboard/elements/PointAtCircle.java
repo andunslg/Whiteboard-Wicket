@@ -37,56 +37,39 @@ public class PointAtCircle extends Element{
 	}
 
 	public PointAtCircle(JSONObject object) throws JSONException{
-		Integer id=(Integer)object.get("id");
+		this.id=(Integer)object.get("id");
 
-		String label=null;
 		try{
-			label=(String)object.get("lable");
+			this.label=(String)object.get("lable");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String color=null;
 		try{
-			color=(String)object.get("color");
+			this.color=(String)object.get("color");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean trace=null;
 		try{
-			trace=(Boolean)object.get("trace");
+			this.trace=(Boolean)object.get("trace");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean hidden=null;
 		try{
-			hidden=(Boolean)object.get("hidden");
+			this.hidden=(Boolean)object.get("hidden");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String type=(String)object.get("type");
-
-		int obj=(Integer)object.get("obj");
-
-		Double x=(Double)object.get("x");
-		Double y=(Double)object.get("y");
-
-		this.id=id;
-		this.label=label;
-		this.color=color;
-		this.hidden=hidden;
-		this.type=type;
-		this.trace=trace;
-		this.x=x;
-		this.y=y;
-		this.obj=obj;
-
+		this.type=(String)object.get("type");
+		this.obj=(Integer)object.get("obj");
+		this.x=(Double)object.get("x");
+		this.y=(Double)object.get("y");
 	}
 
-	public String getJSON(){
+	public JSONObject getJSON(){
 
 		JSONObject jsonObject=new JSONObject();
 		try{
@@ -112,7 +95,7 @@ public class PointAtCircle extends Element{
 			e.printStackTrace();
 		}
 
-		return jsonObject.toString();
+		return jsonObject;
 	}
 
 

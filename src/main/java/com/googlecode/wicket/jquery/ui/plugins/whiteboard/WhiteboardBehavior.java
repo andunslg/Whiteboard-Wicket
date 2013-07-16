@@ -25,6 +25,7 @@ import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.json.JSONArray;
 import org.apache.wicket.ajax.json.JSONException;
 import org.apache.wicket.ajax.json.JSONObject;
 import org.apache.wicket.markup.head.*;
@@ -35,8 +36,9 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+
+import static com.googlecode.wicket.jquery.ui.plugins.whiteboard.WhiteboardBehavior.ElementType.Circle_3p;
+import static com.googlecode.wicket.jquery.ui.plugins.whiteboard.WhiteboardBehavior.ElementType.PointFree;
 
 public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
@@ -55,44 +57,46 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		String editedElement = webRequest.getQueryParameters().getParameterValue("editedElement").toString();
 
 		try{
-
 			//Mapping JSON String to Objects and Adding to the Element List
-			Element element=null;
-			if(editedElement.contains("PointFree")){
-				element=new PointFree(new JSONObject(editedElement));
-			}else if(editedElement.contains("PencilCurve")){
-				element=new PencilCurve(new JSONObject(editedElement));
+			JSONObject jsonEditedElement=new JSONObject(editedElement);
+			String elementType=(String)jsonEditedElement.get("type");
 
-			}else if(editedElement.contains("PencilFreeLine")){
-				element=new PencilFreeLine(new JSONObject(editedElement));
-			}else if(editedElement.contains("PencilRect")){
-				element=new PencilRect(new JSONObject(editedElement));
-			}else if(editedElement.contains("PencilPointAtRect")){
-				element=new PencilPointAtRect(new JSONObject(editedElement));
-			}else if(editedElement.contains("PencilCircle")){
-				element=new PencilCircle(new JSONObject(editedElement));
-			}else if(editedElement.contains("Text")){
-				element=new Text(new JSONObject(editedElement));
-			}else if(editedElement.contains("PointAtLine")){
-				element=new PointAtLine(new JSONObject(editedElement));
-			}else if(editedElement.contains("PointAtCircle")){
-				element=new PointAtCircle(new JSONObject(editedElement));
-			}else if(editedElement.contains("Point_2l")){
-				element=new Point_2l(new JSONObject(editedElement));
-			}else if(editedElement.contains("Point_2c")){
-				element=new Point_2c(new JSONObject(editedElement));
-			}else if(editedElement.contains("Point_lc")){
-				element=new Point_lc(new JSONObject(editedElement));
-			}else if(editedElement.contains("LineGeneral")){
-				element=new LineGeneral(new JSONObject(editedElement));
-			}else if(editedElement.contains("Line_2p")){
-				element=new Line_2p(new JSONObject(editedElement));
-			}else if(editedElement.contains("Segment")){
-				element=new Segment(new JSONObject(editedElement));
-			}else if(editedElement.contains("CircleGeneral")){
-				element=new CircleGeneral(new JSONObject(editedElement));
-			}else if(editedElement.contains("Circle_3p")){
-				element=new Circle_3p(new JSONObject(editedElement));
+			Element element=null;
+
+			if("PointFree".equals(elementType)){
+				element=new PointFree(jsonEditedElement);
+			}else if("PencilCurve".equals(elementType)){
+				element=new PencilCurve(jsonEditedElement);
+			}else if("PencilFreeLine".equals(elementType)){
+				element=new PencilFreeLine(jsonEditedElement);
+			}else if("PencilRect".equals(elementType)){
+				element=new PencilRect(jsonEditedElement);
+			}else if("PencilPointAtRect".equals(elementType)){
+				element=new PencilPointAtRect(jsonEditedElement);
+			}else if("PencilCircle".equals(elementType)){
+				element=new PencilCircle(jsonEditedElement);
+			}else if("Text".equals(elementType)){
+				element=new Text(jsonEditedElement);
+			}else if("PointAtLine".equals(elementType)){
+				element=new PointAtLine(jsonEditedElement);
+			}else if("PointAtCircle".equals(elementType)){
+				element=new PointAtCircle(jsonEditedElement);
+			}else if("Point_2l".equals(elementType)){
+				element=new Point_2l(jsonEditedElement);
+			}else if("Point_2c".equals(elementType)){
+				element=new Point_2c(jsonEditedElement);
+			}else if("Point_lc".equals(elementType)){
+				element=new Point_lc(jsonEditedElement);
+			}else if("LineGeneral".equals(elementType)){
+				element=new LineGeneral(jsonEditedElement);
+			}else if("Line_2p".equals(elementType)){
+				element=new Line_2p(jsonEditedElement);
+			}else if("Segment".equals(elementType)){
+				element=new Segment(jsonEditedElement);
+			}else if("CircleGeneral".equals(elementType)){
+				element=new CircleGeneral(jsonEditedElement);
+			}else if("Circle_3p".equals(elementType)){
+				element=new Circle_3p(jsonEditedElement);
 			}
 
 			if(element!=null){
@@ -123,7 +127,6 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 	public void renderHead(Component component, IHeaderResponse response) {
 		super.renderHead(component,response);
 		initReferences(response);
-		String componentMarkupId=component.getMarkupId();
 		String callbackUrl=getCallbackUrl().toString();
 		String whiteboardInitializeScript="" +
 				"whiteboard = bay.whiteboard.Create();\n" +
@@ -134,21 +137,11 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				"whiteboard.render(document.getElementById('"+whiteboardId+"'));";
 
 		if(!elementMap.isEmpty()){
-			String elementList="[";
-			Iterator iterator = elementMap.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry mapEntry = (Map.Entry) iterator.next();
-				Element element=(Element)mapEntry.getValue();
-
-				if(mapEntry.getKey().equals(0)){
-					elementList+=element.getJSON();
-				}
-				else{
-					elementList+=","+element.getJSON();
-				}
+			JSONArray jsonArray=new JSONArray();
+			for (Element e : elementMap.values()) {
+				jsonArray.put(e.getJSON());
 			}
-			elementList+="]";
-			whiteboardInitializeScript+="elementCollection.parseJson('"+elementList+"');";
+			whiteboardInitializeScript+="elementCollection.parseJson('"+jsonArray.toString()+"');";
 		}
 
 		response.render(OnDomReadyHeaderItem.forScript(whiteboardInitializeScript));
@@ -207,5 +200,10 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	public void setElementMap(HashMap<Integer,Element> elementMap){
 		this.elementMap=elementMap;
+	}
+
+	public enum ElementType{
+		PointFree,PencilCurve,PencilFreeLine,PencilRect,PencilPointAtRect,PencilCircle,Text,PointAtLine,
+		PointAtCircle,Point_2l,Point_2c,Point_lc,LineGeneral,Line_2p,Segment,CircleGeneral,Circle_3p;
 	}
 }

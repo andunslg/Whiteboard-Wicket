@@ -26,7 +26,7 @@ public abstract class Element{
 	protected Boolean hidden;	//flag if the element hidden (not visible)
 	protected String type;		// type (class) of the element
 
-	public abstract String getJSON();
+	public abstract JSONObject getJSON();
 
 	public int getId(){
 		return id;

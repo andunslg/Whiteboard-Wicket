@@ -37,57 +37,40 @@ public class LineGeneral extends Element{
 	}
 
 	public LineGeneral(JSONObject object) throws JSONException{
-		Integer id=(Integer)object.get("id");
+		this.id=(Integer)object.get("id");
 
-		String label=null;
 		try{
-			label=(String)object.get("lable");
+			this.label=(String)object.get("lable");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String color=null;
 		try{
-			color=(String)object.get("color");
+			this.color=(String)object.get("color");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean trace=null;
 		try{
-			trace=(Boolean)object.get("trace");
+			this.trace=(Boolean)object.get("trace");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean hidden=null;
 		try{
-			hidden=(Boolean)object.get("hidden");
+			this.hidden=(Boolean)object.get("hidden");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String type=(String)object.get("type");
-
-		double a=(Integer)object.get("a");
-
-		double b=(Integer)object.get("b");
-
-		double c=(Integer)object.get("c");
-
-		this.id=id;
-		this.label=label;
-		this.color=color;
-		this.hidden=hidden;
-		this.type=type;
-		this.trace=trace;
-		this.a=a;
-		this.b=b;
-		this.c=c;
+		this.type=(String)object.get("type");
+		this.a=(Integer)object.get("a");
+		this.b=(Integer)object.get("b");
+		this.c=(Integer)object.get("c");
 
 	}
 
-	public String getJSON(){
+	public JSONObject getJSON(){
 		JSONObject jsonObject=new JSONObject();
 		try{
 			jsonObject.put("id",id);
@@ -112,7 +95,7 @@ public class LineGeneral extends Element{
 			e.printStackTrace();
 		}
 
-		return jsonObject.toString();
+		return jsonObject;
 	}
 
 	public double getB(){

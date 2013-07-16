@@ -38,39 +38,35 @@ public class PencilCurve extends Element{
 	}
 
 	public PencilCurve(JSONObject object) throws JSONException{
-		Integer id=(Integer)object.get("id");
+		this.id=(Integer)object.get("id");
 
-		String label=null;
 		try{
-			label=(String)object.get("lable");
+			this.label=(String)object.get("lable");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String color=null;
 		try{
-			color=(String)object.get("color");
+			this.color=(String)object.get("color");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean trace=null;
 		try{
-			trace=(Boolean)object.get("trace");
+			this.trace=(Boolean)object.get("trace");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean hidden=null;
 		try{
-			hidden=(Boolean)object.get("hidden");
+			this.hidden=(Boolean)object.get("hidden");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String type=(String)object.get("type");
+		this.type=(String)object.get("type");
 
-		int p0=(Integer)object.get("p0");
+		this.p0=(Integer)object.get("p0");
 
 		int pointCount=0;
 
@@ -82,7 +78,8 @@ public class PencilCurve extends Element{
 				break;
 			}
 		}
-		ArrayList<Double[][]> points=new ArrayList<Double[][]>();
+
+		this.points=new ArrayList<Double[][]>();
 
 		for(int i=0;i<pointCount;i++){
 			if(object.get("x"+i) instanceof Double){
@@ -95,20 +92,10 @@ public class PencilCurve extends Element{
 				Double  [][] point= {{x,y}};
 				points.add(point);
 			}
-
 		}
-
-		this.id=id;
-		this.label=label;
-		this.color=color;
-		this.hidden=hidden;
-		this.type=type;
-		this.trace=trace;
-		this.p0=p0;
-		this.points=points;
 	}
 
-	public String getJSON(){
+	public JSONObject getJSON(){
 		JSONObject jsonObject=new JSONObject();
 		try{
 			jsonObject.put("id",id);
@@ -135,7 +122,7 @@ public class PencilCurve extends Element{
 			e.printStackTrace();
 		}
 
-		return jsonObject.toString();
+		return jsonObject;
 	}
 
 	public ArrayList<Double[][]> getPoints(){

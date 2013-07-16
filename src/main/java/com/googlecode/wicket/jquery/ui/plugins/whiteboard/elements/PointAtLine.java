@@ -35,54 +35,38 @@ public class PointAtLine extends Element{
 	}
 
 	public PointAtLine(JSONObject object) throws JSONException{
-		Integer id=(Integer)object.get("id");
+		this.id=(Integer)object.get("id");
 
-		String label=null;
 		try{
-			label=(String)object.get("lable");
+			this.label=(String)object.get("lable");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String color=null;
 		try{
-			color=(String)object.get("color");
+			this.color=(String)object.get("color");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean trace=null;
 		try{
-			trace=(Boolean)object.get("trace");
+			this.trace=(Boolean)object.get("trace");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		Boolean hidden=null;
 		try{
-			hidden=(Boolean)object.get("hidden");
+			this.hidden=(Boolean)object.get("hidden");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
 
-		String type=(String)object.get("type");
-
-		int obj=(Integer)object.get("obj");
-
-		Double t=(Double)object.get("t");
-
-		this.id=id;
-		this.label=label;
-		this.color=color;
-		this.hidden=hidden;
-		this.type=type;
-		this.trace=trace;
-		this.t=t;
-		this.obj=obj;
-
+		this.type=(String)object.get("type");
+		this.obj=(Integer)object.get("obj");
+		this.t=(Double)object.get("t");
 	}
 
-	public String getJSON(){
+	public JSONObject getJSON(){
 		JSONObject jsonObject=new JSONObject();
 		try{
 			jsonObject.put("id",id);
@@ -106,7 +90,7 @@ public class PointAtLine extends Element{
 			e.printStackTrace();
 		}
 
-		return jsonObject.toString();
+		return jsonObject;
 	}
 
 
