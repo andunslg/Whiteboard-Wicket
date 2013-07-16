@@ -42,7 +42,7 @@ public class Circle_3p extends Element{
 
 
 		try{
-			this.label=(String)object.get("lable");
+			this.label=(String)object.get("label");
 		}catch(JSONException e){
 			//Add Error Handling
 		}

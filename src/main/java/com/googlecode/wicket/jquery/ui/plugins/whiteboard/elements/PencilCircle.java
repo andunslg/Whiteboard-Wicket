@@ -38,7 +38,7 @@ public class PencilCircle extends Element{
 		this.id=(Integer)object.get("id");
 
 		try{
-			this.label=(String)object.get("lable");
+			this.label=(String)object.get("label");
 		}catch(JSONException e){
 			//Add Error Handling
 		}
