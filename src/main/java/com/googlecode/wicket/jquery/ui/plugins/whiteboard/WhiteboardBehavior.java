@@ -96,6 +96,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				element=new Circle_3p(jsonEditedElement);
 			}
 
+			// Synchronizing newly added element between whiteboards
 			if(element!=null){
 				elementMap.put(element.getId(),element);
 
@@ -133,11 +134,13 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				"Wicket.Ajax.get({u:'"+callbackUrl+"',ep:{editedElement:changedElement}});\n};\n"+
 				"whiteboard.render(document.getElementById('"+whiteboardId+"'));";
 
+		//Clearing the whiteboard for first client
 		IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
 		if(reg.getConnections(Application.get()).size()==0){
 			elementMap.clear();
 		}
 
+		//Loading existing content for clients join after first one
 		if(!elementMap.isEmpty()){
 			JSONArray jsonArray=new JSONArray();
 			for (Element e : elementMap.values()) {

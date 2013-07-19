@@ -29,8 +29,14 @@ public class Whiteboard extends Panel{
 	public  static final Logger log =   LoggerFactory.getLogger(Whiteboard.class);
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creating a whiteboard instance for given element id
+	 * @param id
+	 */
 	public Whiteboard(String id){
 		super(id);
+
+		//Adding Web Socket behaviour to handle synchronization between whiteboards
 
 		this.add(new WebSocketBehavior(){
 			private static final long serialVersionUID=-3311970325911992958L;
