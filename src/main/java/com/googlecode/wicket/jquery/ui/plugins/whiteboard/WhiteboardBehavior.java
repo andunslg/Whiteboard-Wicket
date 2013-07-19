@@ -37,9 +37,6 @@ import org.apache.wicket.request.http.WebRequest;
 
 import java.util.HashMap;
 
-import static com.googlecode.wicket.jquery.ui.plugins.whiteboard.WhiteboardBehavior.ElementType.Circle_3p;
-import static com.googlecode.wicket.jquery.ui.plugins.whiteboard.WhiteboardBehavior.ElementType.PointFree;
-
 public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	private String whiteboardId;
@@ -136,6 +133,11 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				"Wicket.Ajax.get({u:'"+callbackUrl+"',ep:{editedElement:changedElement}});\n};\n"+
 				"whiteboard.render(document.getElementById('"+whiteboardId+"'));";
 
+		IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
+		if(reg.getConnections(Application.get()).size()==0){
+			elementMap.clear();
+		}
+
 		if(!elementMap.isEmpty()){
 			JSONArray jsonArray=new JSONArray();
 			for (Element e : elementMap.values()) {
@@ -202,8 +204,4 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		this.elementMap=elementMap;
 	}
 
-	public enum ElementType{
-		PointFree,PencilCurve,PencilFreeLine,PencilRect,PencilPointAtRect,PencilCircle,Text,PointAtLine,
-		PointAtCircle,Point_2l,Point_2c,Point_lc,LineGeneral,Line_2p,Segment,CircleGeneral,Circle_3p;
-	}
 }
