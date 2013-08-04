@@ -35,12 +35,20 @@ import org.apache.wicket.protocol.ws.api.IWebSocketConnectionRegistry;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	private String whiteboardId;
 	private static HashMap<Integer,Element> elementMap=new HashMap<Integer,Element>();
+
+	private ArrayDeque<ArrayList> undoSnapshots=new ArrayDeque<ArrayList>(20);
+	private ArrayDeque<ArrayList> undoSnapshotCreationList=new ArrayDeque<ArrayList>(20);
+
+	private ArrayList<Element> snapShot=null;
+	private ArrayList<Boolean> snapShotCreation=null;
 
 	public WhiteboardBehavior(String whiteboardId){
 		super();
@@ -56,9 +64,16 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		try{
 			//Mapping JSON String to Objects and Adding to the Element List
 			JSONObject jsonEditedElement=new JSONObject(editedElement);
+
+			System.out.println(jsonEditedElement);
 			String elementType=(String)jsonEditedElement.get("type");
 
 			Element element=null;
+
+			if(snapShot==null&&snapShotCreation==null){
+				snapShot=new ArrayList<Element>();
+				snapShotCreation=new ArrayList<Boolean>();
+			}
 
 			if("PointFree".equals(elementType)){
 				element=new PointFree(jsonEditedElement);
@@ -94,6 +109,28 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				element=new CircleGeneral(jsonEditedElement);
 			}else if("Circle_3p".equals(elementType)){
 				element=new Circle_3p(jsonEditedElement);
+			}
+
+			if(elementMap.containsKey(element.getId())){
+				snapShot.add(elementMap.get(element.getId()));
+				snapShotCreation.add(false);
+			}
+			else{
+				snapShot.add(element);
+				snapShotCreation.add(true);
+			}
+
+			if(!"PointFree".equals(element.getType())){
+				if(undoSnapshots.size()==20){
+					undoSnapshots.pollFirst();
+					undoSnapshotCreationList.pollFirst();
+				}
+			 	undoSnapshots.addLast(snapShot);
+				undoSnapshotCreationList.addLast(snapShotCreation);
+
+				snapShot=null;
+				snapShotCreation=null;
+
 			}
 
 			// Synchronizing newly added element between whiteboards
