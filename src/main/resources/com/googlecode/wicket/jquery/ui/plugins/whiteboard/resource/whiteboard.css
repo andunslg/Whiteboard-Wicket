@@ -63,6 +63,15 @@ td.bwb_drawarea svg{
 .bwb_toolbarButton.tools {
   background-image: url('image/tools.gif');
 }
+
+.bwb_toolbarButton.setSize {
+    background-image: url('image/resize.png');
+}
+
+.bwb_toolbarButton.undo {
+    background-image: url('image/undo.png');
+}
+
 .bwb_toolbarButton.coordinates {
   background-image: url('image/coordinates.gif');
 }
@@ -144,6 +153,14 @@ td.bwb_drawarea svg{
   border-radius: 6px;
   background-color: WhiteSmoke;
   position: absolute;
+}
+
+.bwb_sizeDialog {
+    margin: 3px;
+    border: 3px outset;
+    border-radius: 6px;
+    background-color: WhiteSmoke;
+    position: absolute;
 }
 
 .bwb_infoDialog button{

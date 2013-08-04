@@ -59,103 +59,129 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 		RequestCycle cycle = RequestCycle.get();
 		WebRequest webRequest = (WebRequest) cycle.getRequest();
-		String editedElement = webRequest.getQueryParameters().getParameterValue("editedElement").toString();
 
-		try{
-			//Mapping JSON String to Objects and Adding to the Element List
-			JSONObject jsonEditedElement=new JSONObject(editedElement);
+		if(webRequest.getQueryParameters().getParameterValue("editedElement").toString()!=null){
+			String editedElement = webRequest.getQueryParameters().getParameterValue("editedElement").toString();
 
-			System.out.println(jsonEditedElement);
-			String elementType=(String)jsonEditedElement.get("type");
+			try{
+				//Mapping JSON String to Objects and Adding to the Element List
+				JSONObject jsonEditedElement=new JSONObject(editedElement);
 
-			Element element=null;
+				System.out.println(jsonEditedElement);
+				String elementType=(String)jsonEditedElement.get("type");
 
-			if(snapShot==null&&snapShotCreation==null){
-				snapShot=new ArrayList<Element>();
-				snapShotCreation=new ArrayList<Boolean>();
-			}
+				Element element=null;
 
-			if("PointFree".equals(elementType)){
-				element=new PointFree(jsonEditedElement);
-			}else if("PencilCurve".equals(elementType)){
-				element=new PencilCurve(jsonEditedElement);
-			}else if("PencilFreeLine".equals(elementType)){
-				element=new PencilFreeLine(jsonEditedElement);
-			}else if("PencilRect".equals(elementType)){
-				element=new PencilRect(jsonEditedElement);
-			}else if("PencilPointAtRect".equals(elementType)){
-				element=new PencilPointAtRect(jsonEditedElement);
-			}else if("PencilCircle".equals(elementType)){
-				element=new PencilCircle(jsonEditedElement);
-			}else if("Text".equals(elementType)){
-				element=new Text(jsonEditedElement);
-			}else if("PointAtLine".equals(elementType)){
-				element=new PointAtLine(jsonEditedElement);
-			}else if("PointAtCircle".equals(elementType)){
-				element=new PointAtCircle(jsonEditedElement);
-			}else if("Point_2l".equals(elementType)){
-				element=new Point_2l(jsonEditedElement);
-			}else if("Point_2c".equals(elementType)){
-				element=new Point_2c(jsonEditedElement);
-			}else if("Point_lc".equals(elementType)){
-				element=new Point_lc(jsonEditedElement);
-			}else if("LineGeneral".equals(elementType)){
-				element=new LineGeneral(jsonEditedElement);
-			}else if("Line_2p".equals(elementType)){
-				element=new Line_2p(jsonEditedElement);
-			}else if("Segment".equals(elementType)){
-				element=new Segment(jsonEditedElement);
-			}else if("CircleGeneral".equals(elementType)){
-				element=new CircleGeneral(jsonEditedElement);
-			}else if("Circle_3p".equals(elementType)){
-				element=new Circle_3p(jsonEditedElement);
-			}
-
-			if(elementMap.containsKey(element.getId())){
-				snapShot.add(elementMap.get(element.getId()));
-				snapShotCreation.add(false);
-			}
-			else{
-				snapShot.add(element);
-				snapShotCreation.add(true);
-			}
-
-			if(!"PointFree".equals(element.getType())){
-				if(undoSnapshots.size()==20){
-					undoSnapshots.pollFirst();
-					undoSnapshotCreationList.pollFirst();
+				if(snapShot==null&&snapShotCreation==null){
+					snapShot=new ArrayList<Element>();
+					snapShotCreation=new ArrayList<Boolean>();
 				}
-			 	undoSnapshots.addLast(snapShot);
-				undoSnapshotCreationList.addLast(snapShotCreation);
 
-				snapShot=null;
-				snapShotCreation=null;
+				if("PointFree".equals(elementType)){
+					element=new PointFree(jsonEditedElement);
+				}else if("PencilCurve".equals(elementType)){
+					element=new PencilCurve(jsonEditedElement);
+				}else if("PencilFreeLine".equals(elementType)){
+					element=new PencilFreeLine(jsonEditedElement);
+				}else if("PencilRect".equals(elementType)){
+					element=new PencilRect(jsonEditedElement);
+				}else if("PencilPointAtRect".equals(elementType)){
+					element=new PencilPointAtRect(jsonEditedElement);
+				}else if("PencilCircle".equals(elementType)){
+					element=new PencilCircle(jsonEditedElement);
+				}else if("Text".equals(elementType)){
+					element=new Text(jsonEditedElement);
+				}else if("PointAtLine".equals(elementType)){
+					element=new PointAtLine(jsonEditedElement);
+				}else if("PointAtCircle".equals(elementType)){
+					element=new PointAtCircle(jsonEditedElement);
+				}else if("Point_2l".equals(elementType)){
+					element=new Point_2l(jsonEditedElement);
+				}else if("Point_2c".equals(elementType)){
+					element=new Point_2c(jsonEditedElement);
+				}else if("Point_lc".equals(elementType)){
+					element=new Point_lc(jsonEditedElement);
+				}else if("LineGeneral".equals(elementType)){
+					element=new LineGeneral(jsonEditedElement);
+				}else if("Line_2p".equals(elementType)){
+					element=new Line_2p(jsonEditedElement);
+				}else if("Segment".equals(elementType)){
+					element=new Segment(jsonEditedElement);
+				}else if("CircleGeneral".equals(elementType)){
+					element=new CircleGeneral(jsonEditedElement);
+				}else if("Circle_3p".equals(elementType)){
+					element=new Circle_3p(jsonEditedElement);
+				}
 
-			}
+				if(elementMap.containsKey(element.getId())){
+					snapShot.add(elementMap.get(element.getId()));
+					snapShotCreation.add(false);
+				}
+				else{
+					snapShot.add(element);
+					snapShotCreation.add(true);
+				}
 
-			// Synchronizing newly added element between whiteboards
-			if(element!=null){
-				elementMap.put(element.getId(),element);
+				if(!"PointFree".equals(element.getType())){
+					if(undoSnapshots.size()==20){
+						undoSnapshots.pollFirst();
+						undoSnapshotCreationList.pollFirst();
+					}
+					undoSnapshots.addLast(snapShot);
+					undoSnapshotCreationList.addLast(snapShotCreation);
 
-				IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
-				for (IWebSocketConnection c : reg.getConnections(Application.get())) {
-					try {
-						JSONObject jsonObject=new JSONObject(editedElement);
-						c.sendMessage(getMessage(jsonObject).toString());
-					} catch(Exception e) {
-						e.printStackTrace();
+					snapShot=null;
+					snapShotCreation=null;
+				}
+
+				// Synchronizing newly added element between whiteboards
+				if(element!=null){
+					elementMap.put(element.getId(),element);
+
+					IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
+					for (IWebSocketConnection c : reg.getConnections(Application.get())) {
+						try {
+							JSONObject jsonObject=new JSONObject(editedElement);
+							c.sendMessage(getAddElementMessage(jsonObject).toString());
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
-			}
 
-		}catch(JSONException e){
-			e.printStackTrace();
+			}catch(JSONException e){
+				e.printStackTrace();
+			}
+		}
+		else if(webRequest.getQueryParameters().getParameterValue("undo").toString()!=null){
+			ArrayList<Boolean> undoCreationList=undoSnapshotCreationList.pollLast();
+			ArrayList<Element> undoElement=undoSnapshots.pollLast();
+
+
+		}
+		else if(webRequest.getQueryParameters().getParameterValue("eraseAll").toString()!=null){
+			elementMap.clear();
+			IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
+			for (IWebSocketConnection c : reg.getConnections(Application.get())) {
+				try {
+					JSONObject jsonObject=new JSONObject("{}");
+					c.sendMessage(getWhiteboardMessage(jsonObject).toString());
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
-	private JSONObject getMessage(JSONObject element) throws JSONException {
+	private JSONObject getAddElementMessage(JSONObject element) throws JSONException {
 		return new JSONObject()
 				.put("type", "wbElement")
+				.put("json", element);
+	}
+
+	private JSONObject getWhiteboardMessage(JSONObject element) throws JSONException {
+		return new JSONObject()
+				.put("type", "wb")
 				.put("json", element);
 	}
 
@@ -164,6 +190,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		initReferences(response);
 		String callbackUrl=getCallbackUrl().toString();
 		String whiteboardInitializeScript="" +
+				"callbackUrl='"+callbackUrl+"';" +
 				"whiteboard = bay.whiteboard.Create();\n" +
 				"elementCollection=whiteboard.getMainCollection();"+
 				"whiteboard.getMainCollection().onChange = function(element){\n"+
@@ -242,6 +269,10 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	public void setElementMap(HashMap<Integer,Element> elementMap){
 		this.elementMap=elementMap;
+	}
+
+	public void undo(){
+
 	}
 
 }
