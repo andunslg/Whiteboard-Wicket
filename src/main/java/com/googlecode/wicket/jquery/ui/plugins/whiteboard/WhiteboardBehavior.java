@@ -44,8 +44,8 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 	private String whiteboardId;
 	private static HashMap<Integer,Element> elementMap=new HashMap<Integer,Element>();
 
-	private ArrayDeque<ArrayList> undoSnapshots=new ArrayDeque<ArrayList>(20);
-	private ArrayDeque<ArrayList> undoSnapshotCreationList=new ArrayDeque<ArrayList>(20);
+	private static ArrayDeque<ArrayList> undoSnapshots=new ArrayDeque<ArrayList>(20);
+	private static ArrayDeque<ArrayList> undoSnapshotCreationList=new ArrayDeque<ArrayList>(20);
 
 	private ArrayList<Element> snapShot=null;
 	private ArrayList<Boolean> snapShotCreation=null;
