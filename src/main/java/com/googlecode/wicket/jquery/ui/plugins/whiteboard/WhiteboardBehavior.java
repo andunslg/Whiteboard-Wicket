@@ -63,6 +63,8 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		if(webRequest.getQueryParameters().getParameterValue("editedElement").toString()!=null){
 			String editedElement = webRequest.getQueryParameters().getParameterValue("editedElement").toString();
 
+			System.out.println(editedElement);
+
 			try{
 				//Mapping JSON String to Objects and Adding to the Element List
 				JSONObject jsonEditedElement=new JSONObject(editedElement);
@@ -110,7 +112,14 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 					element=new CircleGeneral(jsonEditedElement);
 				}else if("Circle_3p".equals(elementType)){
 					element=new Circle_3p(jsonEditedElement);
+				}else if("PencilArrow".equals(elementType)){
+					element=new PencilArrow(jsonEditedElement);
+				}else if("PencilUnderline".equals(elementType)){
+					element=new PencilUnderline(jsonEditedElement);
+				}else if("PencilPointer".equals(elementType)){
+					element=new PencilPointer(jsonEditedElement);
 				}
+
 
 				if(elementMap.containsKey(element.getId())&&!elementMap.isEmpty()){
 					snapShot.add(elementMap.get(element.getId()));
