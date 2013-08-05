@@ -59,7 +59,7 @@
             if (message && message.type == "addElement") {
                 addElement(JSON.stringify(message.json));
             }else if(message && message.type == "parseWB"){
-                parseJson(JSON.stringify(message.json));
+                parseJson(message.json);
             }else if(message && message.type == "undoList"){
                 undo(message);
             }

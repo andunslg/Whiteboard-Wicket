@@ -36,6 +36,8 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -62,8 +64,6 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 		if(webRequest.getQueryParameters().getParameterValue("editedElement").toString()!=null){
 			String editedElement = webRequest.getQueryParameters().getParameterValue("editedElement").toString();
-
-			System.out.println(editedElement);
 
 			try{
 				//Mapping JSON String to Objects and Adding to the Element List
@@ -258,8 +258,9 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 		//Loading existing content for clients join after first one
 		if(!elementMap.isEmpty()){
+			Map<Integer,Element> sortedElementList = new TreeMap<Integer,Element>(elementMap);
 			JSONArray jsonArray=new JSONArray();
-			for (Element e : elementMap.values()) {
+			for (Element e : sortedElementList.values()) {
 				jsonArray.put(e.getJSON());
 			}
 			whiteboardInitializeScript+="elementCollection.parseJson('"+jsonArray.toString()+"');";
