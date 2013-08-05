@@ -26,19 +26,42 @@
     <script type="text/javascript">
 
         function addElement(m) {
-            elementCollection.acceptJsonStr(JSON.stringify(m.json));
+            elementCollection.acceptJsonStr(m);
         }
 
         function parseWB(m) {
-            elementCollection.parseJson(JSON.stringify(m.json));
+            elementCollection.parseJson(m);
         }
+
+        function deleteElement(m) {
+            elementCollection.acceptDeletion(m);
+        }
+
+        function undo(m) {
+            if(JSON.stringify(m.deleteList)!='\"\"') {
+                var deleteList= JSON.stringify(m.deleteList).substring(1,JSON.stringify(m.deleteList).length-1).split(",");
+                for (var i = 0; i < deleteList.length; i++) {
+                    console.log("Deleting------:"+deleteList[i]);
+                    deleteElement(deleteList[i])
+                }
+            }
+
+            var changeList= m.changeList;
+            for (var i = 0; i < changeList.length; i++) {
+                console.log("Changing------:"+changeList[i]);
+                addElement(JSON.stringify(changeList[i]));
+            }
+        }
+
 
         Wicket.Event.subscribe("/websocket/message", function(jqEvent, msg) {
             var message=jQuery.parseJSON(msg)
-            if (message && message.type == "wbElement") {
-                addElement(message);
-            }else if(message && message.type == "wb"){
-                parseWB(message);
+            if (message && message.type == "addElement") {
+                addElement(JSON.stringify(message.json));
+            }else if(message && message.type == "parseWB"){
+                parseJson(JSON.stringify(message.json));
+            }else if(message && message.type == "undoList"){
+                undo(message);
             }
         });
     </script>

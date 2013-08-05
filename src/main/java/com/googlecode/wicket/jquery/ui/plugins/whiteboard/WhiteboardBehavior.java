@@ -67,7 +67,6 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				//Mapping JSON String to Objects and Adding to the Element List
 				JSONObject jsonEditedElement=new JSONObject(editedElement);
 
-				System.out.println(jsonEditedElement);
 				String elementType=(String)jsonEditedElement.get("type");
 
 				Element element=null;
@@ -113,7 +112,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 					element=new Circle_3p(jsonEditedElement);
 				}
 
-				if(elementMap.containsKey(element.getId())){
+				if(elementMap.containsKey(element.getId())&&!elementMap.isEmpty()){
 					snapShot.add(elementMap.get(element.getId()));
 					snapShotCreation.add(false);
 				}
@@ -154,8 +153,39 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 			}
 		}
 		else if(webRequest.getQueryParameters().getParameterValue("undo").toString()!=null){
-			ArrayList<Boolean> undoCreationList=undoSnapshotCreationList.pollLast();
-			ArrayList<Element> undoElement=undoSnapshots.pollLast();
+			if(!undoSnapshots.isEmpty()){
+				ArrayList<Boolean> undoCreationList=undoSnapshotCreationList.pollLast();
+				ArrayList<Element> undoElement=undoSnapshots.pollLast();
+
+				String deleteList="";
+				JSONArray changeList=new JSONArray();
+
+				IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
+
+				for(int i=0;i<undoElement.size();i++){
+					if(undoCreationList.get(i)){
+						elementMap.remove(undoElement.get(i).getId());
+						if("".equals(deleteList)){
+							deleteList= ""+undoElement.get(i).getId();
+						}
+						else{
+							deleteList+= ","+undoElement.get(i).getId();
+						}
+					}
+					else{
+						elementMap.put(undoElement.get(i).getId(),undoElement.get(i));
+						changeList.put(undoElement.get(i).getJSON());
+					}
+				}
+
+				for (IWebSocketConnection c : reg.getConnections(Application.get())) {
+					try {
+						c.sendMessage(getUndoMessage(changeList,deleteList).toString());
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 
 
 		}
@@ -164,8 +194,8 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 			IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
 			for (IWebSocketConnection c : reg.getConnections(Application.get())) {
 				try {
-					JSONObject jsonObject=new JSONObject("{}");
-					c.sendMessage(getWhiteboardMessage(jsonObject).toString());
+					JSONArray jsonArray=new JSONArray();
+					c.sendMessage(getWhiteboardMessage(jsonArray).toString());
 				} catch(Exception e) {
 					e.printStackTrace();
 				}
@@ -175,14 +205,27 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	private JSONObject getAddElementMessage(JSONObject element) throws JSONException {
 		return new JSONObject()
-				.put("type", "wbElement")
+				.put("type", "addElement")
 				.put("json", element);
 	}
 
-	private JSONObject getWhiteboardMessage(JSONObject element) throws JSONException {
+	private JSONObject getDeleteElementMessage(int element) throws JSONException {
 		return new JSONObject()
-				.put("type", "wb")
-				.put("json", element);
+				.put("type", "deleteElement")
+				.put("elementID", element);
+	}
+
+	private JSONObject getUndoMessage(JSONArray changeList,String deleteList) throws JSONException {
+		return new JSONObject()
+				.put("type", "undoList")
+				.put("changeList", changeList)
+		        .put("deleteList", deleteList);
+	}
+
+	private JSONObject getWhiteboardMessage(JSONArray array) throws JSONException {
+		return new JSONObject()
+				.put("type", "parseWB")
+				.put("json", array);
 	}
 
 	public void renderHead(Component component, IHeaderResponse response) {
