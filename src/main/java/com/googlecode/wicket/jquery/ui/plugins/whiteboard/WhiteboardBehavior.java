@@ -35,17 +35,17 @@ import org.apache.wicket.protocol.ws.api.IWebSocketConnectionRegistry;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	private String whiteboardId;
-	private static HashMap<Integer,Element> elementMap=new HashMap<Integer,Element>();
+	private static ConcurrentHashMap<Integer,Element> elementMap=new ConcurrentHashMap<Integer,Element>();
 
-	private static ArrayDeque<ArrayList> undoSnapshots=new ArrayDeque<ArrayList>(20);
-	private static ArrayDeque<ArrayList> undoSnapshotCreationList=new ArrayDeque<ArrayList>(20);
+	private static LinkedBlockingDeque<ArrayList> undoSnapshots=new LinkedBlockingDeque<ArrayList>(20);
+	private static LinkedBlockingDeque<ArrayList> undoSnapshotCreationList=new LinkedBlockingDeque<ArrayList>(20);
 
 	private ArrayList<Element> snapShot=null;
 	private ArrayList<Boolean> snapShotCreation=null;
@@ -306,16 +306,12 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		return null;
 	}
 
-	public HashMap<Integer,Element> getElementMap(){
+	public ConcurrentHashMap<Integer,Element> getElementMap(){
 		return elementMap;
 	}
 
-	public void setElementMap(HashMap<Integer,Element> elementMap){
+	public void setElementMap(ConcurrentHashMap<Integer,Element> elementMap){
 		this.elementMap=elementMap;
-	}
-
-	public void undo(){
-
 	}
 
 }
