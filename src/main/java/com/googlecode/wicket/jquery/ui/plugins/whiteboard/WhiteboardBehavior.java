@@ -242,13 +242,14 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		initReferences(response);
 		String callbackUrl=getCallbackUrl().toString();
 		String whiteboardInitializeScript="" +
-				"callbackUrl='"+callbackUrl+"';" +
+				"callbackUrl='"+callbackUrl+"';\n" +
 				"whiteboard = bay.whiteboard.Create();\n" +
-				"elementCollection=whiteboard.getMainCollection();"+
+				"elementCollection=whiteboard.getMainCollection();\n"+
 				"whiteboard.getMainCollection().onChange = function(element){\n"+
 				"changedElement=this.getJson(element);\n"+
 				"Wicket.Ajax.get({u:'"+callbackUrl+"',ep:{editedElement:changedElement}});\n};\n"+
-				"whiteboard.render(document.getElementById('"+whiteboardId+"'));";
+				"whiteboard.render(document.getElementById('"+whiteboardId+"'));\n"+
+				"whiteboard.setBoundaries(0, 0, 0, 0);\n";
 
 		//Clearing the whiteboard for first client
 		IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
