@@ -21,6 +21,7 @@ import com.googlecode.wicket.jquery.ui.plugins.whiteboard.resource.GoogStyleShee
 import com.googlecode.wicket.jquery.ui.plugins.whiteboard.resource.WhiteboardJavaScriptResourceReference;
 import com.googlecode.wicket.jquery.ui.plugins.whiteboard.resource.WhiteboardStyleSheetResourceReference;
 import com.googlecode.wicket.jquery.ui.plugins.whiteboard.settings.IWhiteboardLibrarySettings;
+import com.sun.org.apache.xerces.internal.impl.dv.DatatypeException;
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -35,7 +36,13 @@ import org.apache.wicket.protocol.ws.api.IWebSocketConnectionRegistry;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -55,6 +62,71 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 	public WhiteboardBehavior(String whiteboardId){
 		super();
 		this.whiteboardId=whiteboardId;
+	}
+
+	public WhiteboardBehavior(String whiteboardId,String whiteboardContent){
+		super();
+		this.whiteboardId=whiteboardId;
+		if(whiteboardContent!=null&&!whiteboardContent.equals("")) {
+			try{
+				JSONArray elementList=new JSONArray(whiteboardContent) ;
+				for(int i=0;i<elementList.length();i++){
+					JSONObject jElement=(JSONObject)elementList.get(i);
+
+					String elementType=(String)jElement.get("type");
+
+					Element element=null;
+
+					if("PointFree".equals(elementType)){
+						element=new PointFree(jElement);
+					}else if("PencilCurve".equals(elementType)){
+						element=new PencilCurve(jElement);
+					}else if("PencilFreeLine".equals(elementType)){
+						element=new PencilFreeLine(jElement);
+					}else if("PencilRect".equals(elementType)){
+						element=new PencilRect(jElement);
+					}else if("PencilPointAtRect".equals(elementType)){
+						element=new PencilPointAtRect(jElement);
+					}else if("PencilCircle".equals(elementType)){
+						element=new PencilCircle(jElement);
+					}else if("Text".equals(elementType)){
+						element=new Text(jElement);
+					}else if("PointAtLine".equals(elementType)){
+						element=new PointAtLine(jElement);
+					}else if("PointAtCircle".equals(elementType)){
+						element=new PointAtCircle(jElement);
+					}else if("Point_2l".equals(elementType)){
+						element=new Point_2l(jElement);
+					}else if("Point_2c".equals(elementType)){
+						element=new Point_2c(jElement);
+					}else if("Point_lc".equals(elementType)){
+						element=new Point_lc(jElement);
+					}else if("LineGeneral".equals(elementType)){
+						element=new LineGeneral(jElement);
+					}else if("Line_2p".equals(elementType)){
+						element=new Line_2p(jElement);
+					}else if("Segment".equals(elementType)){
+						element=new Segment(jElement);
+					}else if("CircleGeneral".equals(elementType)){
+						element=new CircleGeneral(jElement);
+					}else if("Circle_3p".equals(elementType)){
+						element=new Circle_3p(jElement);
+					}else if("PencilArrow".equals(elementType)){
+						element=new PencilArrow(jElement);
+					}else if("PencilUnderline".equals(elementType)){
+						element=new PencilUnderline(jElement);
+					}else if("PencilPointer".equals(elementType)){
+						element=new PencilPointer(jElement);
+					}
+
+					if(element!=null){
+						elementMap.put(element.getId(),element);
+					}
+				}
+			}catch(JSONException e){
+				e.printStackTrace();
+			}
+		}
 	}
 
 	protected void respond(final AjaxRequestTarget target){
@@ -210,6 +282,35 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				}
 			}
 		}
+		else if(webRequest.getQueryParameters().getParameterValue("save").toString()!=null){
+			JSONArray elementArray= new JSONArray();
+			for(int elementID:elementMap.keySet()){
+				elementArray.put(elementMap.get(elementID).getJSON());
+			}
+			DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+			Date date = new Date();
+			File whiteboardFile = new File("Whiteboard_"+dateFormat.format(date)+".json");
+
+			FileWriter writer=null;
+			try{
+				whiteboardFile.createNewFile();
+				System.out.println(whiteboardFile.getAbsolutePath());
+				writer=new FileWriter(whiteboardFile);
+				writer.write(elementArray.toString());
+				writer.flush();
+			}catch(IOException e){
+				e.printStackTrace();
+			}finally{
+				if(writer != null){
+					try{
+						writer.close();
+					}catch(IOException e){
+						e.printStackTrace();
+					}
+				}
+			}
+
+		}
 	}
 
 	private JSONObject getAddElementMessage(JSONObject element) throws JSONException {
@@ -239,6 +340,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 	public void renderHead(Component component, IHeaderResponse response) {
 		super.renderHead(component,response);
+
 		initReferences(response);
 		String callbackUrl=getCallbackUrl().toString();
 		String whiteboardInitializeScript="" +

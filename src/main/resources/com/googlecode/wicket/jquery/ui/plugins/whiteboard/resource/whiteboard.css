@@ -160,6 +160,10 @@ td.bwb_drawarea svg{
     background-image: url('image/undo.png');
 }
 
+.bwb_toolbarButton.save {
+    background-image: url('image/save.png');
+}
+
 .pressedButton {
   border-style: inset;
 }

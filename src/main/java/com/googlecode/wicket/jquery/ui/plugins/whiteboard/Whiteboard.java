@@ -33,7 +33,7 @@ public class Whiteboard extends Panel{
 	 * Creating a whiteboard instance for given element id
 	 * @param id
 	 */
-	public Whiteboard(String id){
+	public Whiteboard(String id,String whiteboardContent){
 		super(id);
 
 		//Adding Web Socket behaviour to handle synchronization between whiteboards
@@ -57,7 +57,8 @@ public class Whiteboard extends Panel{
 		WebMarkupContainer whiteboard=new WebMarkupContainer("whiteboard");
 		this.add(whiteboard);
 
-		WhiteboardBehavior whiteboardBehavior=new WhiteboardBehavior("whiteboard");
+		WhiteboardBehavior whiteboardBehavior=new WhiteboardBehavior("whiteboard",whiteboardContent);
 		this.add(whiteboardBehavior);
 	}
+
 }
