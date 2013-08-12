@@ -70,6 +70,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		if(whiteboardContent!=null&&!whiteboardContent.equals("")) {
 			try{
 				JSONArray elementList=new JSONArray(whiteboardContent) ;
+
 				for(int i=0;i<elementList.length();i++){
 					JSONObject jElement=(JSONObject)elementList.get(i);
 
@@ -118,8 +119,28 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 						undoSnapshots.pollFirst();
 						undoSnapshotCreationList.pollFirst();
 					}
-					undoSnapshots.addLast(snapShot);
-					undoSnapshotCreationList.addLast(snapShotCreation);
+
+					if("PencilCurve".equals(element.getType())) {
+						ArrayList<Element> lastElementSnapshot=undoSnapshots.getLast();
+						Element lastSnapshotElement=lastElementSnapshot.get(lastElementSnapshot.size()-1);
+
+						if((lastSnapshotElement instanceof PencilCurve )&& (lastSnapshotElement.getId()==element.getId())){
+							ArrayList<Boolean> lastCreationSnapshot=undoSnapshotCreationList.getLast();
+
+							for(int i=0;i<snapShot.size();i++){
+								lastElementSnapshot.add(snapShot.get(i));
+								lastCreationSnapshot.add(snapShotCreation.get(i));
+							}
+						}
+						else{
+							undoSnapshots.addLast(snapShot);
+							undoSnapshotCreationList.addLast(snapShotCreation);
+						}
+
+					}  else{
+						undoSnapshots.addLast(snapShot);
+						undoSnapshotCreationList.addLast(snapShotCreation);
+					}
 
 					snapShot=null;
 					snapShotCreation=null;
