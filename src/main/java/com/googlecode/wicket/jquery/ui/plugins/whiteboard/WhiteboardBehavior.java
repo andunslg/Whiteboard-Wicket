@@ -73,51 +73,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 				for(int i=0;i<elementList.length();i++){
 					JSONObject jElement=(JSONObject)elementList.get(i);
 
-					String elementType=(String)jElement.get("type");
-
-					Element element=null;
-
-					if("PointFree".equals(elementType)){
-						element=new PointFree(jElement);
-					}else if("PencilCurve".equals(elementType)){
-						element=new PencilCurve(jElement);
-					}else if("PencilFreeLine".equals(elementType)){
-						element=new PencilFreeLine(jElement);
-					}else if("PencilRect".equals(elementType)){
-						element=new PencilRect(jElement);
-					}else if("PencilPointAtRect".equals(elementType)){
-						element=new PencilPointAtRect(jElement);
-					}else if("PencilCircle".equals(elementType)){
-						element=new PencilCircle(jElement);
-					}else if("Text".equals(elementType)){
-						element=new Text(jElement);
-					}else if("PointAtLine".equals(elementType)){
-						element=new PointAtLine(jElement);
-					}else if("PointAtCircle".equals(elementType)){
-						element=new PointAtCircle(jElement);
-					}else if("Point_2l".equals(elementType)){
-						element=new Point_2l(jElement);
-					}else if("Point_2c".equals(elementType)){
-						element=new Point_2c(jElement);
-					}else if("Point_lc".equals(elementType)){
-						element=new Point_lc(jElement);
-					}else if("LineGeneral".equals(elementType)){
-						element=new LineGeneral(jElement);
-					}else if("Line_2p".equals(elementType)){
-						element=new Line_2p(jElement);
-					}else if("Segment".equals(elementType)){
-						element=new Segment(jElement);
-					}else if("CircleGeneral".equals(elementType)){
-						element=new CircleGeneral(jElement);
-					}else if("Circle_3p".equals(elementType)){
-						element=new Circle_3p(jElement);
-					}else if("PencilArrow".equals(elementType)){
-						element=new PencilArrow(jElement);
-					}else if("PencilUnderline".equals(elementType)){
-						element=new PencilUnderline(jElement);
-					}else if("PencilPointer".equals(elementType)){
-						element=new PencilPointer(jElement);
-					}
+					Element element=getElementObject(jElement);
 
 					if(element!=null){
 						elementMap.put(element.getId(),element);
@@ -138,60 +94,15 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 			String editedElement = webRequest.getQueryParameters().getParameterValue("editedElement").toString();
 
 			try{
-				//Mapping JSON String to Objects and Adding to the Element List
-				JSONObject jsonEditedElement=new JSONObject(editedElement);
-
-				String elementType=(String)jsonEditedElement.get("type");
-
-				Element element=null;
 
 				if(snapShot==null&&snapShotCreation==null){
 					snapShot=new ArrayList<Element>();
 					snapShotCreation=new ArrayList<Boolean>();
 				}
 
-				if("PointFree".equals(elementType)){
-					element=new PointFree(jsonEditedElement);
-				}else if("PencilCurve".equals(elementType)){
-					element=new PencilCurve(jsonEditedElement);
-				}else if("PencilFreeLine".equals(elementType)){
-					element=new PencilFreeLine(jsonEditedElement);
-				}else if("PencilRect".equals(elementType)){
-					element=new PencilRect(jsonEditedElement);
-				}else if("PencilPointAtRect".equals(elementType)){
-					element=new PencilPointAtRect(jsonEditedElement);
-				}else if("PencilCircle".equals(elementType)){
-					element=new PencilCircle(jsonEditedElement);
-				}else if("Text".equals(elementType)){
-					element=new Text(jsonEditedElement);
-				}else if("PointAtLine".equals(elementType)){
-					element=new PointAtLine(jsonEditedElement);
-				}else if("PointAtCircle".equals(elementType)){
-					element=new PointAtCircle(jsonEditedElement);
-				}else if("Point_2l".equals(elementType)){
-					element=new Point_2l(jsonEditedElement);
-				}else if("Point_2c".equals(elementType)){
-					element=new Point_2c(jsonEditedElement);
-				}else if("Point_lc".equals(elementType)){
-					element=new Point_lc(jsonEditedElement);
-				}else if("LineGeneral".equals(elementType)){
-					element=new LineGeneral(jsonEditedElement);
-				}else if("Line_2p".equals(elementType)){
-					element=new Line_2p(jsonEditedElement);
-				}else if("Segment".equals(elementType)){
-					element=new Segment(jsonEditedElement);
-				}else if("CircleGeneral".equals(elementType)){
-					element=new CircleGeneral(jsonEditedElement);
-				}else if("Circle_3p".equals(elementType)){
-					element=new Circle_3p(jsonEditedElement);
-				}else if("PencilArrow".equals(elementType)){
-					element=new PencilArrow(jsonEditedElement);
-				}else if("PencilUnderline".equals(elementType)){
-					element=new PencilUnderline(jsonEditedElement);
-				}else if("PencilPointer".equals(elementType)){
-					element=new PencilPointer(jsonEditedElement);
-				}
-
+				//Mapping JSON String to Objects and Adding to the Element List
+				JSONObject jsonEditedElement=new JSONObject(editedElement);
+				Element element=getElementObject(jsonEditedElement);
 
 				if(elementMap.containsKey(element.getId())&&!elementMap.isEmpty()){
 					snapShot.add(elementMap.get(element.getId()));
@@ -329,7 +240,7 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		return new JSONObject()
 				.put("type", "undoList")
 				.put("changeList", changeList)
-		        .put("deleteList", deleteList);
+				.put("deleteList", deleteList);
 	}
 
 	private JSONObject getWhiteboardMessage(JSONArray array) throws JSONException {
@@ -355,9 +266,9 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 
 		//Clearing the whiteboard for first client
 		IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
-		if(reg.getConnections(Application.get()).size()==0){
-			elementMap.clear();
-		}
+//		if(reg.getConnections(Application.get()).size()==0){
+//			elementMap.clear();
+//		}
 
 		//Loading existing content for clients join after first one
 		if(!elementMap.isEmpty()){
@@ -427,4 +338,56 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 		this.elementMap=elementMap;
 	}
 
+	private Element getElementObject(JSONObject jsonObject){
+		Element element=null;
+
+		try{
+			String elementType=(String)jsonObject.get("type");
+			if("PointFree".equals(elementType)){
+				element=new PointFree(jsonObject);
+			}else if("PencilCurve".equals(elementType)){
+				element=new PencilCurve(jsonObject);
+			}else if("PencilFreeLine".equals(elementType)){
+				element=new PencilFreeLine(jsonObject);
+			}else if("PencilRect".equals(elementType)){
+				element=new PencilRect(jsonObject);
+			}else if("PencilPointAtRect".equals(elementType)){
+				element=new PencilPointAtRect(jsonObject);
+			}else if("PencilCircle".equals(elementType)){
+				element=new PencilCircle(jsonObject);
+			}else if("Text".equals(elementType)){
+				element=new Text(jsonObject);
+			}else if("PointAtLine".equals(elementType)){
+				element=new PointAtLine(jsonObject);
+			}else if("PointAtCircle".equals(elementType)){
+				element=new PointAtCircle(jsonObject);
+			}else if("Point_2l".equals(elementType)){
+				element=new Point_2l(jsonObject);
+			}else if("Point_2c".equals(elementType)){
+				element=new Point_2c(jsonObject);
+			}else if("Point_lc".equals(elementType)){
+				element=new Point_lc(jsonObject);
+			}else if("LineGeneral".equals(elementType)){
+				element=new LineGeneral(jsonObject);
+			}else if("Line_2p".equals(elementType)){
+				element=new Line_2p(jsonObject);
+			}else if("Segment".equals(elementType)){
+				element=new Segment(jsonObject);
+			}else if("CircleGeneral".equals(elementType)){
+				element=new CircleGeneral(jsonObject);
+			}else if("Circle_3p".equals(elementType)){
+				element=new Circle_3p(jsonObject);
+			}else if("PencilArrow".equals(elementType)){
+				element=new PencilArrow(jsonObject);
+			}else if("PencilUnderline".equals(elementType)){
+				element=new PencilUnderline(jsonObject);
+			}else if("PencilPointer".equals(elementType)){
+				element=new PencilPointer(jsonObject);
+			}
+		}catch(JSONException e){
+			e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+		}
+
+		return element;
+	}
 }
