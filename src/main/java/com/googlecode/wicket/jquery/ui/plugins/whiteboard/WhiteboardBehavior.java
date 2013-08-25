@@ -243,6 +243,21 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 			}
 
 		}
+
+		else if(webRequest.getQueryParameters().getParameterValue("clipArt").toString()!=null){
+
+			IWebSocketConnectionRegistry reg = IWebSocketSettings.Holder.get(Application.get()).getConnectionRegistry();
+			for (IWebSocketConnection c : reg.getConnections(Application.get())) {
+				try {
+					JSONArray jsonArray=new JSONArray();
+					jsonArray.put("http://icons.iconarchive.com/icons/femfoyou/angry-birds/64/angry-bird-icon.png");
+					jsonArray.put("http://icons.iconarchive.com/icons/femfoyou/angry-birds/64/angry-bird-yellow-icon.png");
+					c.sendMessage(getClipArtListMessage(jsonArray).toString());
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	private JSONObject getAddElementMessage(JSONObject element) throws JSONException {
@@ -267,6 +282,12 @@ public class WhiteboardBehavior extends AbstractDefaultAjaxBehavior{
 	private JSONObject getWhiteboardMessage(JSONArray array) throws JSONException {
 		return new JSONObject()
 				.put("type", "parseWB")
+				.put("json", array);
+	}
+
+	private JSONObject getClipArtListMessage(JSONArray array) throws JSONException {
+		return new JSONObject()
+				.put("type", "clipArtList")
 				.put("json", array);
 	}
 

@@ -19,6 +19,7 @@
 <wicket:head>
     <script type="text/javascript">
         var callbackUrl='';
+        var clipArtList='';
     </script>
 </wicket:head>
 <wicket:panel>
@@ -62,6 +63,9 @@
                 parseJson(message.json);
             }else if(message && message.type == "undoList"){
                 undo(message);
+            }
+            else if(message && message.type == "clipArtList"){
+               clipArtList=message.json;
             }
         });
     </script>
